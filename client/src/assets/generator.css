@@ -1,0 +1,29 @@
+.generator,.blockGenerator {
+    height: 120vh;
+    color: white;
+}
+.generator_buttons {
+    display: flex;
+    justify-content: space-around;
+}
+.blockGenerator__container {
+    width:70%;
+    height: 50%;
+    margin: 0 auto;
+    background-color: rgba(255,255,255,0.1);
+    margin-top: 100px;
+    padding: 30px;
+}
+.blockGenerator__container div {
+    margin: 0 auto;
+}
+.blockGenerator__container_btns {
+    display : flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    margin: 10px;
+}
+.blockGenerator__container_btns div{
+margin : 10px 0;
+}

@@ -1,0 +1,9 @@
+.main {
+    background-color:rgb(11, 38, 92);
+}
+.main__block1 {
+    height: 100vh;
+    margin:0 auto;
+    padding-top: 20%; 
+    padding-left:45%;
+}
