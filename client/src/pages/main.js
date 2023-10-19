@@ -48,7 +48,7 @@ const Main = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/add_transaction",
+        "http://127.0.0.1:5000/add_transaction",
         formData
       );
       console.log("Transaction sent:", response.data);
@@ -58,7 +58,7 @@ const Main = () => {
   };
   const generateBlock = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/mine_block");
+      const response = await axios.get("http://127.0.0.1:5000/mine_block");
       console.log("New block generated:", response.data);
     } catch (error) {
       console.error("Error generating block:", error);

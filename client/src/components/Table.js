@@ -6,12 +6,12 @@ export const Row = (props) => {
     <>
       {type == "block" && (
         <div className="row">
-          <div>{el.index}</div>
+          <div><p>{el.index}</p></div>
           <div></div>
-          <div>{el.hash}</div>
-          <div>{el.timestamp}</div>
-          <div>{JSON.stringify(el.transactions)}</div>
-          <div>{el.previous_hash}</div>
+          <div><p>{el.hash}</p></div>
+          <div><p>{el.timestamp}</p></div>
+          <div><p>{JSON.stringify(el.transactions)}</p></div>
+          <div><p>{el.previous_hash}</p></div>
         </div>
       )}
       {type=='key' && (
