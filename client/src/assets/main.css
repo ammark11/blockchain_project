@@ -4,6 +4,14 @@
 .main__block1 {
     height: 100vh;
     margin:0 auto;
-    padding-top: 20%; 
-    padding-left:45%;
+    /* padding-top: 20%; 
+    padding-left:45%; */
+}
+.message {
+    display: block;
+    margin: 10px 0;
+    color: white;
+}
+.row {
+    width: 20vw;
 }
