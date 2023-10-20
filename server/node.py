@@ -8,7 +8,16 @@ from urllib.parse import urlparse
 from flask_cors import CORS
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
+from flask_cors import CORS, cross_origin
 
+app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
+
+# Rest of your code...
+
+if __name__ == "__main__":
+    app.run(host='127.0.0.1', port=5000, debug=True)
 # Building Blockchain
 
 class Blockchain:
@@ -103,16 +112,15 @@ class Blockchain:
             block_index += 1
         return True
 
-    def add_transactions(self, sender, recipient, amount, public_key, add_info):
+    def add_transactions(self, sender, key, changes):
         self.transactions.append({
             "sender": sender,
-            "recipient": recipient,
-            "amount": amount,
-            "public_key": public_key,
-            "add_info": add_info
+            "key": key,
+            "changes": changes
         })
         previous_block = self.get_previous_block()
         return previous_block["index"] + 1
+
 
     def add_node(self, address):
         paresed_url = urlparse(address)
@@ -214,6 +222,7 @@ def is_valid():
 
 @app.route("/add_transaction", methods=['POST'])
 def add_transactions():
+    print("hey")
     json = request.json
     transaction_keys = ["sender", "recipient", "amount", "public_key", "add_info"]
 
