@@ -5,6 +5,8 @@ import axios from 'axios';
 // import { Table } from '../components/Table';
 
 import '../assets/main.css'
+
+
 const Main =() => {
     const [publicKey, setPublicKey] = useState([]);
     const [file, setFile] = useState([]);
@@ -12,9 +14,18 @@ const Main =() => {
         transactionNumber: 0,
         additionalInfo: '',
     });
+    const [fileContent, setFileContent] = useState(''); // State to store the file content as a string
+
+
     const handleFileUpload = (event)=>{
         const uploadFile = event.target.files[0];
         setFile(uploadFile);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+        setFileContent(e.target.result);
+        };
+        reader.readAsText(uploadFile);
  
     }
     const handlePublicKeyUpload = (event)=>{
@@ -22,11 +33,7 @@ const Main =() => {
         setPublicKey(uploadedPublicKey);
 
     }
-    const handlePrivateKeyUpload = (event)=>{
-        const uploadedPublicKey = event.target.files[0];
-        setPublicKey(uploadedPublicKey);
 
-    }
     const sendTransaction = async () => {
         const formData = new FormData();
         formData.append('file', file);
@@ -61,9 +68,8 @@ const Main =() => {
                 <UploadButton text={'Send transaction'} onClick={sendTransaction}/>
                 <UploadButton text={'Generate block'} onClick={generateBlock}/>
 
-
+                <pre>{fileContent}</pre>
              </div>
-             
         </div>
     )
 }
