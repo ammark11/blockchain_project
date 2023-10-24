@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Lists from '../src/pages/lists'
 import Generator from "./pages/rsa-generator";
 import BlockGenerator from "./pages/block-generate";
+import TransactionDetails from "./pages/transactionDetails";
 function App() {
   return (
     <BrowserRouter>
@@ -16,6 +17,7 @@ function App() {
           <Route path="/lists" element={[<Header/>, <Lists />]} />
           <Route path="/generator" element={[<Header />, <Generator />]} />
           <Route path="/block-generate" element={[<Header />, <BlockGenerator />]} />
+          <Route path="/transaction-detail/:index" element={[<MainHeader />, <TransactionDetails />]} />
         </Routes>
       </div>
     </BrowserRouter>

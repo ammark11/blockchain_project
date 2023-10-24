@@ -8,31 +8,26 @@ from urllib.parse import urlparse
 from flask_cors import CORS
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
-from flask_cors import CORS, cross_origin
+import base64
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
 
-app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
-
-
-# Rest of your code...
-
-if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000, debug=True)
-# Building Blockchain
 
 class Blockchain:
     def __init__(self):
         self.chain = []
         self.transactions = []
         self.nodes = set()
-        self.create_block(proof=1, previous_hash = '0')
+        self.create_block(proof=1, previous_hash = '0', miner_address = "")
         
 
-    def create_block(self, proof, previous_hash):
+    def create_block(self, proof, previous_hash, miner_address):
         merkle_root = self.calculate_merkle_root(self.transactions)
         block = {
             "index": len(self.chain) + 1,
-            "miner": "miner_address",
+            "miner": miner_address,
             "timestamp": str(datetime.datetime.now()),
             "proof": proof,
             "previous_hash": previous_hash,
@@ -112,14 +107,26 @@ class Blockchain:
             block_index += 1
         return True
 
-    def add_transactions(self, sender, key, changes):
+    def add_transactions(self, sender, recipient, amount, public_key, add_info, encrypted_file):
+
         self.transactions.append({
             "sender": sender,
-            "key": key,
-            "changes": changes
+            "amount": amount,
+            "recipient": recipient,
+            "public_key": public_key, 
+            "add_info": add_info,
+            "encrypted_file": encrypted_file
         })
         previous_block = self.get_previous_block()
         return previous_block["index"] + 1
+
+    def update_encrypted_transaction(self, decrypted_file, index, transaction_index):
+        i = 0;
+        for (i, ch) in enumerate(self.chain):
+            # print(i, ch['index'])
+            if(ch['index'] == int(index)): 
+                # print(self.chain[i]['transactions'][int(transaction_index)])
+                self.chain[i]['transactions'][int(transaction_index)]['encrypted_file'] = decrypted_file;
 
 
     def add_node(self, address):
@@ -172,7 +179,47 @@ def generate_rsa_keys():
 
 node_address = str(uuid4()).replace('-', '')
 
+def encrypt_text_data(text_data, recipient_public_key):
+    try:
+        recipient_public_key = serialization.load_pem_public_key(
+            recipient_public_key.encode(), backend=default_backend()
+        )
+        encrypted_data = recipient_public_key.encrypt(
+            text_data.encode(),
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None,
+            ),
+        )
+        return base64.b64encode(encrypted_data).decode('utf-8')
+    except Exception as e:
+        return str(e)
+
+# Decrypt text data using the recipient's private key
+def decrypt_text_data(encrypted_data, private_key):
+    # print(encrypted_data, private_key)
+    try:
+        private_key = serialization.load_pem_private_key(
+            private_key.encode(), password=None, backend=default_backend()
+        )
+        encrypted_data = base64.b64decode(encrypted_data)
+        decrypted_data = private_key.decrypt(
+            encrypted_data,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None,
+            ),
+        )
+        return decrypted_data.decode('utf-8')
+    except Exception as e:
+        print(e);
+        return str(e)
+
 blockchain = Blockchain()
+
+
 
 @app.route("/mine_block", methods=['GET'])
 def mine_block():
@@ -202,7 +249,7 @@ def get_chain():
         "active_nodes": list(blockchain.nodes),
         "length": len(blockchain.chain)
     }
-
+   
     return jsonify(response)
 
 @app.route('/generate_keys', methods=['GET'])
@@ -220,26 +267,68 @@ def is_valid():
         response = {'message': "We have a problem. The Blockchain is not valid."}
     return jsonify(response), 200
 
-@app.route("/add_transaction", methods=['POST'])
-def add_transactions():
-    print("hey")
-    json = request.json
-    transaction_keys = ["sender", "recipient", "amount", "public_key", "add_info"]
 
+@app.route("/get_decrypted_data", methods=['POST'])
+def get_decrypted_data():
+    json = request.form.to_dict(flat=True)
+    
+    transaction_keys = ['private_file', "encrypted_data", "index", "transaction_index"]
+
+    # Print the encrypted data for debugging
+    print("Encrypted Data:", json["encrypted_data"])
+    
     if not all(key in json for key in transaction_keys):
         return "Some elements of the transaction are missing", 400
 
-    index = blockchain.add_transaction(
-        json["sender"],
+    try:
+        decrypted_text_data = decrypt_text_data(json["encrypted_data"], json["private_file"])
+        
+        # Print the decrypted data for debugging
+        print("Decrypted Data:", decrypted_text_data)
+        
+        index = blockchain.update_encrypted_transaction(
+            decrypted_text_data,
+            json['index'],
+            json['transaction_index']
+        )
+        
+        response = {
+            "message": f"This transaction will be added to Block {index}"
+        }
+        return jsonify(response), 201
+
+    except Exception as e:
+        # Log the error for debugging
+        print("Decryption Error:", str(e))
+        return "Decryption failed", 400
+
+@app.route("/add_transaction", methods=['POST'])
+def add_transactions():
+    json = request.form.to_dict(flat=True)
+    transaction_keys = ["sender", "recipient", "amount", "public_key", "add_info", 'file']
+
+    if not all(key in json for key in transaction_keys):
+        return "Some elements of the transaction are missing", 400
+    
+    encrypted_text_data = encrypt_text_data(json["file"], json["public_key"])
+
+    if not encrypted_text_data:
+        return "Encryption of text data failed", 400
+
+    index = blockchain.add_transactions(
+        json['sender'],
         json["recipient"],
         json["amount"],
         json["public_key"],  # Include public key
-        json["add_info"]  # Include additional info
+        json["add_info"],  # Include additional info,
+        encrypted_text_data
     )
     response = {
         "message": f"This transaction will be added to Block {index}"
     }
     return jsonify(response), 201
 
+    
 
 app.run(host='0.0.0.0', port=5000, debug=True)
+

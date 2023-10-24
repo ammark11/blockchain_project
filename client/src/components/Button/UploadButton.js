@@ -3,11 +3,11 @@ import '../../assets/button.css'
 const UploadButton = (props) => {
   const {text, action, id} = props;
   return (
-    <div class='file file--upload'>
-      <label for={id}>
+    <div className='file file--upload'>
+      <label htmlFor={id}>
         {text}
       </label>
-      <input id={id} accept='.csf' type='file' onChange={(e) => action(e)}/>
+      <input id={id} accept='*' type='file' onChange={(e) => action(e)}/>
     </div>
   );
 };
