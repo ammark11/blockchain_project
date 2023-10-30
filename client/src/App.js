@@ -8,11 +8,15 @@ import Lists from '../src/pages/lists'
 import Generator from "./pages/rsa-generator";
 import BlockGenerator from "./pages/block-generate";
 import TransactionDetails from "./pages/transactionDetails";
+import NodeRegistration from './NodeRegistration';
+import NodesDashboard from './NodesDashboard';
 function App() {
   return (
     <BrowserRouter>
       <div className="main">
         <Routes >
+          <Route path="/register-node" element={<NodeRegistration />} />
+          <Route path="/nodes-dashboard" element={<NodesDashboard />} />
           <Route path="" element={[<MainHeader />, <Main />]}/> 
           <Route path="/lists" element={[<Header/>, <Lists />]} />
           <Route path="/generator" element={[<Header />, <Generator />]} />
