@@ -327,6 +327,23 @@ def add_transactions():
         "message": f"This transaction will be added to Block {index}"
     }
     return jsonify(response), 201
+    
+@app.route("/register_node", methods=['POST'])
+def register_node():
+    node_address = request.json.get('node_address')
+    if not node_address:
+        return "Invalid data", 400
+    
+    blockchain.add_node(node_address)
+    
+    # Optionally, save the node to nodes.json or a database for persistence
+    
+    return jsonify({"message": f"Node {node_address} added successfully!"}), 201
+    
+@app.route("/get_nodes", methods=['GET'])
+def get_nodes():
+    return jsonify({"nodes": list(blockchain.nodes)})
+
 
     
 
