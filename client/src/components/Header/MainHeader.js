@@ -16,6 +16,8 @@ const MainHeader =() => {
                <ul>
                 <li><a href="#">HOW IT WORKS</a></li>
                 <Link to="/lists">CRYPTOS</Link>
+                <Link to="/register-node">Register Node</Link>
+                <Link to="/nodes-dashboard">Nodes Dashboard</Link>
                 {/* <li><a href='#'>CRYPTOS</a></li> */}
                 <li><a href='#'>FEATURES</a></li>
                 <li><a href='#'>TESTIMONAL</a></li>

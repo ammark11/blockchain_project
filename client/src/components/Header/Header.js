@@ -21,9 +21,15 @@ const Header = () => {
           <Link to="/generator">RSA KEY GENERATOR</Link>
           </li>
           
-          <li>
+     <li>     
           <Link to="/lists">INSERT</Link>
           </li>
+<li>
+                <Link to="/register-node">Register Node</Link>
+  </li>
+<li>
+                <Link to="/nodes-dashboard">Nodes Dashboard</Link>
+  </li>
         </ul>
       </div>
       <div className="header__language">
