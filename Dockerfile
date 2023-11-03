@@ -6,8 +6,6 @@ COPY package.json /app
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 5000
 
-CMD npm start
-
-CMD python node.py 
+CMD npm start && python node.py
