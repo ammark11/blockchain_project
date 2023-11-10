@@ -344,6 +344,21 @@ def register_node():
 def heartbeat():
     return jsonify({'message': 'Node is active'}), 200
    
+def add_node(self, address):
+    parsed_url = urlparse(address)
+    self.nodes.add(parsed_url.netloc)
+
+    # Check if the node is active
+    try:
+        response = requests.get(f'http://{parsed_url.netloc}/heartbeat')
+        if response.status_code == 200:
+            print(f"Node {parsed_url.netloc} is active.")
+        else:
+            self.nodes.remove(parsed_url.netloc)
+            print(f"Node {parsed_url.netloc} is not active.")
+    except requests.exceptions.RequestException:
+        self.nodes.remove(parsed_url.netloc)
+        print(f"Node {parsed_url.netloc} is not active.")
     
 @app.route("/get_nodes", methods=['GET'])
 def get_nodes():
