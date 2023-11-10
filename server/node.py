@@ -339,6 +339,11 @@ def register_node():
     # Optionally, save the node to nodes.json or a database for persistence
     
     return jsonify({"message": f"Node {node_address} added successfully!"}), 201
+  
+@app.route('/heartbeat', methods=['GET'])
+def heartbeat():
+    return jsonify({'message': 'Node is active'}), 200
+   
     
 @app.route("/get_nodes", methods=['GET'])
 def get_nodes():
