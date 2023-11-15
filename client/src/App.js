@@ -10,6 +10,8 @@ import BlockGenerator from "./pages/block-generate";
 import TransactionDetails from "./pages/transactionDetails";
 import NodeRegistration from './NodeRegistration';
 import NodesDashboard from './NodesDashboard';
+import Dashboard from './pages/Dashboard'; 
+
 function App() {
   return (
     <BrowserRouter>
@@ -23,6 +25,7 @@ function App() {
           <Route path="/block-generate" element={[<Header />, <BlockGenerator />]} />
           <Route path="/transaction-detail/:index" element={[<MainHeader />, <TransactionDetails />]} />
           <Route path="/update-transaction" component={UpdateTransaction} />
+          <Route  path="./pages/Dashboard" component={Dashboard} />
         </Routes>
       </div>
     </BrowserRouter>
