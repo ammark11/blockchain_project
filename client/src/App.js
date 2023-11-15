@@ -22,6 +22,7 @@ function App() {
           <Route path="/generator" element={[<Header />, <Generator />]} />
           <Route path="/block-generate" element={[<Header />, <BlockGenerator />]} />
           <Route path="/transaction-detail/:index" element={[<MainHeader />, <TransactionDetails />]} />
+          <Route path="/update-transaction" component={UpdateTransaction} />
         </Routes>
       </div>
     </BrowserRouter>
