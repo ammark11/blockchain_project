@@ -19,9 +19,8 @@ const MainHeader =() => {
                 <Link to="/register-node">Register Node</Link>
                 <Link to="/nodes-dashboard">Nodes Dashboard</Link>
                 {/* <li><a href='#'>CRYPTOS</a></li> */}
-                <li><a href='#'>FEATURES</a></li>
-                <li><a href='#'>TESTIMONAL</a></li>
-                <li><a href='#'>UNIVERSITY</a></li>
+          <li><Link to="/update-transaction">Update Transaction</Link></li>
+          <li><Link to="/dashboard">Dashboard</Link></li>
                </ul>
            </div>
            <div className='header__language'>
