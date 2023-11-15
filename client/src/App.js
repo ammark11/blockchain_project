@@ -11,6 +11,7 @@ import TransactionDetails from "./pages/transactionDetails";
 import NodeRegistration from './NodeRegistration';
 import NodesDashboard from './NodesDashboard';
 import Dashboard from './pages/Dashboard'; 
+import UpdateTransaction from './update-transaction';
 
 function App() {
   return (
