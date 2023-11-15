@@ -365,6 +365,13 @@ def get_nodes():
     return jsonify({"nodes": list(blockchain.nodes)})
 
 
+@app.route('/update_transaction', methods=['POST'])
+def update_transaction():
+    data = request.get_json()
+    # Validate data
+    # Create a new transaction that references the old one
+    # Add logic to handle the new transaction
+    # Return a response
     
 
 app.run(host='0.0.0.0', port=5000, debug=True)
