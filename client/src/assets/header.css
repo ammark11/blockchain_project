@@ -1,11 +1,27 @@
-﻿.header 
-{
-    width: 110%;
-    height : 100px;
+.header {
+    max-width: 100%;
+    height: 100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: rgb(58, 20, 128);
+}
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        height: auto;
+    }
+    .header__links ul {
+        flex-direction: column;
+        align-items: center;
+        display: flex;
+        justify-content: space-around;
+    }
+    .header__links ul li {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-around;
+    }
 }
 .header__links {
     display: flex;

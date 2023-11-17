@@ -1,4 +1,4 @@
-﻿/* General Styles */
+/* General Styles */
 body {
     background-color: #1a1a2e; /* Dark background */
     color: #e0e0e0; /* Light text */
@@ -18,7 +18,8 @@ a, button {
     letter-spacing: 1.5px;
     transition: background-color 0.3s, transform 0.3s;
     border-radius: 5px;
-    box-shadow: 0 0 15px #7209b7; /* Neon-like glow */
+    box-shadow: 0 0 20px #7209b7;
+    padding: 0.5em 1em;
 }
 
 a:hover, button:hover {
@@ -34,6 +35,8 @@ input, select, textarea {
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
+    width: 100%; /* Full width on smaller screens */
+    max-width: 200px;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -66,6 +69,17 @@ input:focus, select:focus, textarea:focus {
     text-decoration: none;
     transition: color 0.3s;
 }
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .navbar a {
+        display: block;
+        margin-bottom: 10px;
+    }
+}
 
 .navbar a:hover {
     color: #c792ea;
@@ -86,7 +100,7 @@ input:focus, select:focus, textarea:focus {
     transition: transform 0.3s;
 }
 
+
 .dashboard-item:hover {
     transform: scale(1.1);
 }
-
