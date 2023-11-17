@@ -1,17 +1,92 @@
-.main {
-    background-color:rgb(11, 38, 92);
+﻿/* General Styles */
+body {
+    background-color: #1a1a2e; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    font-family: 'Orbitron', sans-serif; /* Sci-fi font */
 }
-.main__block1 {
-    height: 100vh;
-    margin:0 auto;
-    /* padding-top: 20%; 
-    padding-left:45%; */
+
+h1, h2, h3, h4, h5, h6 {
+    color: #c792ea; /* Light purple for headings */
 }
-.message {
-    display: block;
-    margin: 10px 0;
+
+a, button {
+    background-color: #7209b7; /* Vibrant purple */
     color: white;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: background-color 0.3s, transform 0.3s;
+    border-radius: 5px;
+    box-shadow: 0 0 15px #7209b7; /* Neon-like glow */
 }
-.row {
-    width: 20vw;
+
+a:hover, button:hover {
+    background-color: #560bad; /* Darker shade for hover */
+    transform: scale(1.05); /* Slight increase in size */
+    cursor: pointer;
 }
+
+input, select, textarea {
+    background-color: #0f3460;
+    border: 1px solid #7209b7;
+    color: #e0e0e0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 10px #7209b7;
+}
+
+/* Container for each page */
+.page-container {
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    background-color: rgba(15, 52, 96, 0.8); /* Semi-transparent background */
+    box-shadow: 0 0 20px #560bad;
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #0f3460;
+    box-shadow: 0 0 10px #7209b7;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: #e0e0e0;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.navbar a:hover {
+    color: #c792ea;
+}
+/* Dashboard Page */
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.dashboard-item {
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(15, 52, 96, 0.5);
+    box-shadow: 0 0 10px #560bad;
+    transition: transform 0.3s;
+}
+
+.dashboard-item:hover {
+    transform: scale(1.1);
+}
+

@@ -1,13 +1,92 @@
+﻿/* General Styles */
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    background-color: #1a1a2e; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    font-family: 'Orbitron', sans-serif; /* Sci-fi font */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h1, h2, h3, h4, h5, h6 {
+    color: #c792ea; /* Light purple for headings */
 }
+
+a, button {
+    background-color: #7209b7; /* Vibrant purple */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: background-color 0.3s, transform 0.3s;
+    border-radius: 5px;
+    box-shadow: 0 0 15px #7209b7; /* Neon-like glow */
+}
+
+a:hover, button:hover {
+    background-color: #560bad; /* Darker shade for hover */
+    transform: scale(1.05); /* Slight increase in size */
+    cursor: pointer;
+}
+
+input, select, textarea {
+    background-color: #0f3460;
+    border: 1px solid #7209b7;
+    color: #e0e0e0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 10px #7209b7;
+}
+
+/* Container for each page */
+.page-container {
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    background-color: rgba(15, 52, 96, 0.8); /* Semi-transparent background */
+    box-shadow: 0 0 20px #560bad;
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #0f3460;
+    box-shadow: 0 0 10px #7209b7;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: #e0e0e0;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.navbar a:hover {
+    color: #c792ea;
+}
+/* Dashboard Page */
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.dashboard-item {
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(15, 52, 96, 0.5);
+    box-shadow: 0 0 10px #560bad;
+    transition: transform 0.3s;
+}
+
+.dashboard-item:hover {
+    transform: scale(1.1);
+}
+

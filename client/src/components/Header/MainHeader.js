@@ -10,7 +10,7 @@ const MainHeader =() => {
        <div className='header'>
            <div className='header__logo'>
                <img src={Logo} />
-               <p>CipherGuard</p>
+               <p>NeoChain</p>
            </div>
            <div className='header__links'>
                <ul>
@@ -19,8 +19,6 @@ const MainHeader =() => {
                 <Link to="/register-node">Register Node</Link>
                 <Link to="/nodes-dashboard">Nodes Dashboard</Link>
                 {/* <li><a href='#'>CRYPTOS</a></li> */}
-          <li><Link to="/update-transaction">Update Transaction</Link></li>
-          <li><Link to="/dashboard">Dashboard</Link></li>
                </ul>
            </div>
            <div className='header__language'>

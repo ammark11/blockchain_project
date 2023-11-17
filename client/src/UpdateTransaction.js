@@ -2,11 +2,20 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const UpdateTransaction = () => {
-    const [transactionData, setTransactionData] = useState({/* initial state */});
+    const [transactionData, setTransactionData] = useState({
+        // Add relevant transaction fields here
+        transactionId: '',
+        newData: ''
+    });
 
-    const handleSubmit = async () => {
+    const handleChange = (e) => {
+        setTransactionData({ ...transactionData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/update_transaction', transactionData);
+            const response = await axios.post('http://127.0.0.1:5000/update_transaction', transactionData);
             console.log(response.data);
             // Handle response
         } catch (error) {
@@ -16,8 +25,17 @@ const UpdateTransaction = () => {
 
     return (
         <div>
-            {/* Form inputs to capture new transaction data */}
-            <button onClick={handleSubmit}>Update Transaction</button>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Transaction ID:
+                    <input type="text" name="transactionId" value={transactionData.transactionNumber} onChange={handleChange} />
+                </label>
+                <label>
+                    New Data:
+                    <input type="text" name="newData" value={transactionData.newData} onChange={handleChange} />
+                </label>
+                <button type="submit">Update Transaction</button>
+            </form>
         </div>
     );
 };
