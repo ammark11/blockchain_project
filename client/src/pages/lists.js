@@ -7,7 +7,7 @@ const Lists = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("http://localhost:5000/get_chain");
+      const response = await fetch("http://139.162.41.68:5000/get_chain");
       const result = await response.json();
       if (result) setBlocks(result.chain);
     }
@@ -19,8 +19,8 @@ const Lists = () => {
       <div className="lists__search"></div>
       <div className="lists__table">
         <Table 
-          colNames={['INDEX', 'MINER', 'HASH', 'DATE AND TIME', 'NUMBER OF TRANSACTIONS', 'NONCE', 'SENDER', 'RECIPIENT']} 
-          data={blocks} 
+                  colNames={['INDEX', 'MINER', 'HASH', 'DATE AND TIME',  'transactions', 'previous_hash']} 
+                  data={blocks} 
           type="block"
         />
       </div>
@@ -29,3 +29,4 @@ const Lists = () => {
 };
 
 export default Lists;
+

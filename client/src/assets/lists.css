@@ -1,5 +1,5 @@
 .lists {
     width: 100%;
-    height: auto;
-    min-height: 100vh; /
+    height: auto; /* Adjust the height as needed */
+    min-height: 100vh; /* Ensures it takes at least the full height of the viewport */
 }

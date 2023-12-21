@@ -14,7 +14,7 @@ const MainHeader =() => {
            </div>
            <div className='header__links'>
                <ul>
-                <li><a href="#">HOW IT WORKS</a></li>
+                
                 <Link to="/lists">CRYPTOS</Link>
                 <Link to="/register-node">Register Node</Link>
                 <Link to="/nodes-dashboard">Nodes Dashboard</Link>

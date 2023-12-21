@@ -9,7 +9,7 @@ const Generator = () => {
   const [privateKey, setPrivateKey] = useState("");
   function generateKey() {
     const fetchData = async () => {
-      const response = await fetch("http://localhost:5000/generate_keys");
+      const response = await fetch("http://139.162.41.68:5000/generate_keys");
       const result = await response.json();
       if (result) {
         setPrivateKey(result.private_key);
@@ -19,7 +19,7 @@ const Generator = () => {
     fetchData();
   }
   function downloadPrivateKey() {
-    const textToWrite = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
+    const textToWrite = `${privateKey}`;
     const blob = new Blob([textToWrite], { type: 'application/octet-stream' });
     const url = window.URL.createObjectURL(blob);
 
@@ -32,7 +32,7 @@ const Generator = () => {
     window.URL.revokeObjectURL(url);
   }
   function downloadPublicKey() {
-    const textToWrite = `-----BEGIN PUBLIC KEY-----\n${publicKey}\n-----END PUBLIC KEY-----`;
+    const textToWrite = `${publicKey}`;
     const blob = new Blob([textToWrite], { type: 'application/octet-stream' });
     const url = window.URL.createObjectURL(blob);
 

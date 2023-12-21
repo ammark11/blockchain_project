@@ -1,7 +1,7 @@
 .table {
   margin: 1em;
-  display: flex;
-  flex-direction: column;
+  display: block; /* Changed from flex to block for scrollable table */
+  overflow-x: auto; /* Allows horizontal scrolling */
   color: white;
   font-weight: bold;
 }

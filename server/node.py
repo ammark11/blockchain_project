@@ -1,7 +1,10 @@
 import datetime
 import hashlib
 import json
-from flask import Flask, jsonify, request
+import base64
+import time 
+
+from flask import Flask, jsonify, request, send_file
 import requests
 from uuid import uuid4
 from urllib.parse import urlparse
@@ -107,15 +110,14 @@ class Blockchain:
             block_index += 1
         return True
 
-    def add_transactions(self, sender, recipient, amount, public_key, add_info, encrypted_file):
-
+    def add_transactions(self, sender, recipient, amount, public_key, add_info, file_data):
         self.transactions.append({
             "sender": sender,
             "amount": amount,
             "recipient": recipient,
-            "public_key": public_key, 
+            "public_key": public_key,
             "add_info": add_info,
-            "encrypted_file": encrypted_file
+            "file_data": file_data
         })
         previous_block = self.get_previous_block()
         return previous_block["index"] + 1
@@ -180,41 +182,75 @@ def generate_rsa_keys():
 node_address = str(uuid4()).replace('-', '')
 
 def encrypt_text_data(text_data, recipient_public_key):
+    start_time = time.time()
     try:
+        print("Original Text Data:", text_data)
+
         recipient_public_key = serialization.load_pem_public_key(
             recipient_public_key.encode(), backend=default_backend()
         )
-        encrypted_data = recipient_public_key.encrypt(
-            text_data.encode(),
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None,
-            ),
-        )
+        print("Recipient Public Key:", recipient_public_key)
+
+        chunk_size = 256
+        chunks = [text_data[i:i + chunk_size] for i in range(0, len(text_data), chunk_size)]
+
+        encrypted_data_chunks = []
+        for chunk in chunks:
+            encrypted_chunk = recipient_public_key.encrypt(
+                chunk.encode(),
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None,
+                ),
+            )
+            encrypted_data_chunks.append(encrypted_chunk)
+
+        encrypted_data = b"".join(encrypted_data_chunks)
+        # print("Encrypted Data:", encrypted_data)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Time spent on file encryption: {elapsed_time} seconds")
+
         return base64.b64encode(encrypted_data).decode('utf-8')
+    except ValueError as ve:
+        print(f"Encryption failed: {ve}")
+        return f"Encryption failed: {ve}"
     except Exception as e:
+        print(f"Encryption failed: {type(e).__name__} - {e}")
         return str(e)
 
-# Decrypt text data using the recipient's private key
+
 def decrypt_text_data(encrypted_data, private_key):
-    # print(encrypted_data, private_key)
+    start_time = time.time()
+    
     try:
         private_key = serialization.load_pem_private_key(
             private_key.encode(), password=None, backend=default_backend()
         )
         encrypted_data = base64.b64decode(encrypted_data)
-        decrypted_data = private_key.decrypt(
-            encrypted_data,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None,
-            ),
-        )
-        return decrypted_data.decode('utf-8')
+
+        decrypted_data_chunks = []
+        chunk_size = 256  
+        for i in range(0, len(encrypted_data), chunk_size):
+            decrypted_chunk = private_key.decrypt(
+                encrypted_data[i:i + chunk_size],
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None,
+                ),
+            )
+            decrypted_data_chunks.append(decrypted_chunk)
+
+        decrypted_data = b"".join(decrypted_data_chunks).decode('utf-8')
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Time spent on file decryption: {elapsed_time} seconds")
+        
+        return decrypted_data
     except Exception as e:
-        print(e);
+        print(f"Decryption failed: {type(e).__name__} - {e}")
         return str(e)
 
 blockchain = Blockchain()
@@ -271,11 +307,8 @@ def is_valid():
 @app.route("/get_decrypted_data", methods=['POST'])
 def get_decrypted_data():
     json = request.form.to_dict(flat=True)
-    
     transaction_keys = ['private_file', "encrypted_data", "index", "transaction_index"]
-
-    # Print the encrypted data for debugging
-    print("Encrypted Data:", json["encrypted_data"])
+    # print("Encrypted Data:", json["encrypted_data"])
     
     if not all(key in json for key in transaction_keys):
         return "Some elements of the transaction are missing", 400
@@ -283,8 +316,9 @@ def get_decrypted_data():
     try:
         decrypted_text_data = decrypt_text_data(json["encrypted_data"], json["private_file"])
         
-        # Print the decrypted data for debugging
-        print("Decrypted Data:", decrypted_text_data)
+        # print("Decrypted Data:", decrypted_text_data)
+        with open("decrypted_data.txt", "w", encoding='utf-8') as file:
+            file.write(decrypted_text_data)
         
         index = blockchain.update_encrypted_transaction(
             decrypted_text_data,
@@ -295,12 +329,12 @@ def get_decrypted_data():
         response = {
             "message": f"This transaction will be added to Block {index}"
         }
-        return jsonify(response), 201
+        return send_file("decrypted_data.txt", as_attachment=True, download_name="decrypted_data.txt")
 
     except Exception as e:
-        # Log the error for debugging
         print("Decryption Error:", str(e))
         return "Decryption failed", 400
+
 
 @app.route("/add_transaction", methods=['POST'])
 def add_transactions():

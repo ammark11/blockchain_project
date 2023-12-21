@@ -16,7 +16,7 @@ const TransactionDetails = () => {
   ]);
 
   const fetchData = async () => {
-    const response = await fetch("http://localhost:5000/get_chain");
+    const response = await fetch("http://139.162.41.68:5000/get_chain");
     const result = await response.json();
     if (result)
       setTransaction(
@@ -26,32 +26,57 @@ const TransactionDetails = () => {
   useEffect(() => {
     fetchData();
   }, []);
+ 
 
-  const handleFileUpload = (
+  const handleFileUpload =  (
     event,
     index,
     transaction_index,
-    encrypted_data
+    encrypted_data,
   ) => {
     var file = event.target.files[0];
     var reader = new FileReader();
-    reader.onload = function (event) {
-      // The file's text will be printed here
+    reader.onload = async function  (event) {
       console.log(event.target.result);
-      // setFile(event.target.result);
       const formData = new FormData();
       formData.append("private_file", event.target.result);
       formData.append("encrypted_data", encrypted_data);
       formData.append("index", index);
       formData.append("transaction_index", transaction_index);
-
-      const response = axios
-        .post("http://127.0.0.1:5000/get_decrypted_data", formData)
-        .then(() => {
-          fetchData();
-        });
+      console.log(encrypted_data)
+      const response = await axios
+        .post("http://139.162.41.68:5000/get_decrypted_data", formData)
+        .then(async (res) => {
+          await fetchData();
+          downloadFile(res.data);
+        })
     };
+
     reader.readAsText(file);
+
+  };
+
+  const downloadFile = (text) => {
+    if (typeof text === 'string' && text.length > 0) {
+      const binaryData = new Uint8Array(text.length);
+      for (let i = 0; i < text.length; i++) {
+        binaryData[i] = text.charCodeAt(i);
+      }
+  
+      const blob = new Blob([binaryData], { type: 'application/octet-stream' });
+  
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+  
+      a.href = url;
+      a.download = 'decrypted_data.txt';
+      a.click();
+    console.log(text);
+    console.log('Text Length:', text.length);  
+      window.URL.revokeObjectURL(url);
+    } else {
+      console.error('Invalid or empty text data.');
+    }
   };
 
   return (
@@ -80,14 +105,16 @@ const TransactionDetails = () => {
           </div>
         </div>
       </div>
-      <div style={{ marginTop: 30 }}></div>
+      <div style={{ marginTop: 50 }}></div>
       <div className="table">
         <div className="head">
           <div>Transaction #</div>
           <div>Public Key</div>
           <div>Encrypted file data</div>
+          <div>File Data</div>
+          <div>Amount</div>
           <div>additional info</div>
-          <div></div>
+          <div>decryption</div>
         </div>
         <div className="body">
           {transaction.transactions?.map((item, i) => (
@@ -102,12 +129,18 @@ const TransactionDetails = () => {
                 <p>{item.encrypted_file}</p>
               </div>
               <div>
+                <p>{item.file_data}</p>
+              </div>
+              <div>
+                <p>{item.amount}</p>
+              </div>
+              <div>
                 <p>{item.add_info}</p>
               </div>
               <UploadButton
                 text={"Decrypt"}
                 action={(e) =>
-                  handleFileUpload(e, transaction.index, i, item.encrypted_file)
+                  handleFileUpload(e, transaction.index, i, item.file_data)
                 }
                 id="input-file1"
               ></UploadButton>

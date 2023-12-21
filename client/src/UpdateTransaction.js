@@ -5,7 +5,8 @@ const UpdateTransaction = () => {
     const [transactionData, setTransactionData] = useState({
         // Add relevant transaction fields here
         transactionId: '',
-        newData: ''
+        newData: '',
+        amount: '',
     });
 
     const handleChange = (e) => {
@@ -15,7 +16,7 @@ const UpdateTransaction = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://127.0.0.1:5000/update_transaction', transactionData);
+            const response = await axios.post('http://139.162.41.68:5000/update_transaction', transactionData);
             console.log(response.data);
             // Handle response
         } catch (error) {
@@ -28,11 +29,15 @@ const UpdateTransaction = () => {
             <form onSubmit={handleSubmit}>
                 <label>
                     Transaction ID:
-                    <input type="text" name="transactionId" value={transactionData.transactionNumber} onChange={handleChange} />
+                    <input type="text" name="transactionId" value={transactionData.hash} onChange={handleChange} />
                 </label>
                 <label>
                     New Data:
                     <input type="text" name="newData" value={transactionData.newData} onChange={handleChange} />
+                </label>
+                <label>
+                     amount:
+                    <input type="text" name="amount" value={transactionData.amount} onChange={handleChange} />
                 </label>
                 <button type="submit">Update Transaction</button>
             </form>

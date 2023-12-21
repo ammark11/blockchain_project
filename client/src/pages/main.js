@@ -66,13 +66,18 @@ const Main = () => {
       console.error("Error generating block:", error);
     }
   };
+
+
+  
   return (
    
     <center>
-       
-    <div className="main">
-      <div className="main__block1">
+                   <br></br><br></br><br></br>
+            <br></br>
+    <div className="form-container">
+      
       <br></br>
+      <h2>Blockchain Transaction</h2>
       <br></br>
         <UploadButton
           text={"IMPORT A FILE"}
@@ -90,6 +95,10 @@ const Main = () => {
         {publicKey.length > 0 && (
           <p className="message">Public key has successfully been uploaded</p>
         )}
+        <br></br>
+            <label htmlFor="senderAddress">Sender Address</label>
+            <br></br>
+            <br></br>
         <input
           type="text"
           placeholder="Sender Address"
@@ -97,6 +106,10 @@ const Main = () => {
           onChange={(e) => setSenderAddress(e.target.value)}
           required
         />
+                <br></br>
+            <label htmlFor="senderAddress">Amount</label>
+            <br></br>
+            <br></br>
         <input
           type="number"
           placeholder="Amount"
@@ -104,13 +117,16 @@ const Main = () => {
           onChange={(e) => setAmount(e.target.value)}
           required
         /><br></br>
-        <Button text={"Send transaction"} onClick={(e) => sendTransaction(e)} />
+                  <br></br>
+        <Button text={"Send transaction"} onClick={(e) => sendTransaction(e)} />        
         <Button
           text={"Generate block"}
           onClick={(e) => generateBlock(e)}
         />
       </div>
-    </div>
+ 
+
+
     </center>
   );
 };
