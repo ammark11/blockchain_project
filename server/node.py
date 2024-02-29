@@ -2,8 +2,8 @@ import datetime
 import hashlib
 import json
 import base64
-import time 
-
+import time
+import qrcode
 from flask import Flask, jsonify, request, send_file
 import requests
 from uuid import uuid4
@@ -24,7 +24,7 @@ class Blockchain:
         self.transactions = []
         self.nodes = set()
         self.create_block(proof=1, previous_hash = '0', miner_address = "")
-        
+
 
     def create_block(self, proof, previous_hash, miner_address):
         merkle_root = self.calculate_merkle_root(self.transactions)
@@ -42,7 +42,7 @@ class Blockchain:
         self.transactions = []
         self.chain.append(block)
         return block
-    
+
     def calculate_merkle_root(self, transactions):
         if len(transactions) == 0:
             return hashlib.sha256(b'').hexdigest()
@@ -126,7 +126,7 @@ class Blockchain:
         i = 0;
         for (i, ch) in enumerate(self.chain):
             # print(i, ch['index'])
-            if(ch['index'] == int(index)): 
+            if(ch['index'] == int(index)):
                 # print(self.chain[i]['transactions'][int(transaction_index)])
                 self.chain[i]['transactions'][int(transaction_index)]['encrypted_file'] = decrypted_file;
 
@@ -146,13 +146,13 @@ class Blockchain:
                 chain = response.json()["chain"]
                 if length > max_length and self.is_chain_valid(chain):
                     max_length = length
-                    longest_chain = chain 
+                    longest_chain = chain
         if longest_chain:
             self.chain = longest_chain
             return True
         return False
-    
-    
+
+
 
 # Mining Blockchain
 
@@ -178,6 +178,18 @@ def generate_rsa_keys():
     ).decode('utf-8')
 
     return private_pem, public_pem
+    
+def save_qr_code(data, filename):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(filename)
 
 node_address = str(uuid4()).replace('-', '')
 
@@ -223,7 +235,7 @@ def encrypt_text_data(text_data, recipient_public_key):
 
 def decrypt_text_data(encrypted_data, private_key):
     start_time = time.time()
-    
+
     try:
         private_key = serialization.load_pem_private_key(
             private_key.encode(), password=None, backend=default_backend()
@@ -231,7 +243,7 @@ def decrypt_text_data(encrypted_data, private_key):
         encrypted_data = base64.b64decode(encrypted_data)
 
         decrypted_data_chunks = []
-        chunk_size = 256  
+        chunk_size = 256
         for i in range(0, len(encrypted_data), chunk_size):
             decrypted_chunk = private_key.decrypt(
                 encrypted_data[i:i + chunk_size],
@@ -247,7 +259,7 @@ def decrypt_text_data(encrypted_data, private_key):
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"Time spent on file decryption: {elapsed_time} seconds")
-        
+
         return decrypted_data
     except Exception as e:
         print(f"Decryption failed: {type(e).__name__} - {e}")
@@ -285,7 +297,7 @@ def get_chain():
         "active_nodes": list(blockchain.nodes),
         "length": len(blockchain.chain)
     }
-   
+
     return jsonify(response)
 
 @app.route('/generate_keys', methods=['GET'])
@@ -309,23 +321,23 @@ def get_decrypted_data():
     json = request.form.to_dict(flat=True)
     transaction_keys = ['private_file', "encrypted_data", "index", "transaction_index"]
     # print("Encrypted Data:", json["encrypted_data"])
-    
+
     if not all(key in json for key in transaction_keys):
         return "Some elements of the transaction are missing", 400
 
     try:
         decrypted_text_data = decrypt_text_data(json["encrypted_data"], json["private_file"])
-        
+
         # print("Decrypted Data:", decrypted_text_data)
         with open("decrypted_data.txt", "w", encoding='utf-8') as file:
             file.write(decrypted_text_data)
-        
+
         index = blockchain.update_encrypted_transaction(
             decrypted_text_data,
             json['index'],
             json['transaction_index']
         )
-        
+
         response = {
             "message": f"This transaction will be added to Block {index}"
         }
@@ -343,7 +355,7 @@ def add_transactions():
 
     if not all(key in json for key in transaction_keys):
         return "Some elements of the transaction are missing", 400
-    
+
     encrypted_text_data = encrypt_text_data(json["file"], json["public_key"])
 
     if not encrypted_text_data:
@@ -361,23 +373,23 @@ def add_transactions():
         "message": f"This transaction will be added to Block {index}"
     }
     return jsonify(response), 201
-    
+
 @app.route("/register_node", methods=['POST'])
 def register_node():
     node_address = request.json.get('node_address')
     if not node_address:
         return "Invalid data", 400
-    
+
     blockchain.add_node(node_address)
-    
+
     # Optionally, save the node to nodes.json or a database for persistence
-    
+
     return jsonify({"message": f"Node {node_address} added successfully!"}), 201
-  
+
 @app.route('/heartbeat', methods=['GET'])
 def heartbeat():
     return jsonify({'message': 'Node is active'}), 200
-   
+
 def add_node(self, address):
     parsed_url = urlparse(address)
     self.nodes.add(parsed_url.netloc)
@@ -393,7 +405,7 @@ def add_node(self, address):
     except requests.exceptions.RequestException:
         self.nodes.remove(parsed_url.netloc)
         print(f"Node {parsed_url.netloc} is not active.")
-    
+
 @app.route("/get_nodes", methods=['GET'])
 def get_nodes():
     return jsonify({"nodes": list(blockchain.nodes)})
@@ -406,7 +418,6 @@ def update_transaction():
     # Create a new transaction that references the old one
     # Add logic to handle the new transaction
     # Return a response
-    
+
 
 app.run(host='0.0.0.0', port=5000, debug=True)
-
