@@ -78,7 +78,7 @@ const Main = () => {
 
   const startScanning = () => {
     const html5QrCode = new Html5Qrcode("qr-reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    const config = { fps: 10, qrbox: { width: 300, height: 300 } };
 
     html5QrCode.start(
       { facingMode: "environment" },
@@ -99,14 +99,36 @@ const Main = () => {
     });
   };
 
+    useEffect(() => {
+      const config = { fps: 10, qrbox: 250 };
+      const html5QrcodeScanner = new Html5QrcodeScanner("qr-code-full-region", config,  false);
+      const onScanSuccess = (decodedText, decodedResult) => {
+        setPublicKey(decodedText);;
+      };
+
+      html5QrcodeScanner.render(onScanSuccess);
+      // Cleanup on component unmount
+      return () => html5QrcodeScanner.clear();
+    }, []);
+
+
+    const clearMessages = () => setPublicKey([]);
+
+
   return (
 
     <center>
+
+
+
+
                    <br></br><br></br><br></br>
             <br></br>
 
 
     <div className="form-container">
+
+
 
       <br></br>
       <h2>Blockchain Transaction</h2>
@@ -133,7 +155,13 @@ const Main = () => {
                 <br></br>
 
         <button id="start-scan" onClick={startScanning}>Scan QR Code Public Key</button>
+        <div id="app">
+              <div id="qr-code-full-region"></div>
+
+    </div>
+
         <div id="qr-reader"></div>
+
 
         <br></br>
             <label htmlFor="senderAddress">Sender Address</label>
