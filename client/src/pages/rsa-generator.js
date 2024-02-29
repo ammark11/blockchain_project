@@ -3,6 +3,7 @@ import Button from "../components/Button/Button";
 import "../assets/generator.css";
 import { Table } from "../components/Table";
 import { useState } from "react";
+import QRCode from 'qrcode';
 
 const Generator = () => {
   const [publicKey, setPublicKey] = useState("");
@@ -44,6 +45,22 @@ const Generator = () => {
 
     window.URL.revokeObjectURL(url);
   }
+
+  // Function to generate and download QR code
+   const generateAndDownloadQR = (data, filename) => {
+     QRCode.toDataURL(data, { errorCorrectionLevel: 'H' })
+       .then(url => {
+         const downloadLink = document.createElement('a');
+         downloadLink.href = url;
+         downloadLink.download = `${filename}.png`;
+         document.body.appendChild(downloadLink);
+         downloadLink.click();
+         document.body.removeChild(downloadLink);
+       })
+       .catch(error => {
+         console.error('Error generating QR code: ', error);
+       });
+   };
   return (
     <div className="generator">
       <div className="generator__button">
@@ -59,7 +76,13 @@ const Generator = () => {
         <div className="generator_buttons">
           <Button text={"DOWNLOAD PUBLIC KEY"} onClick={downloadPublicKey}/>
           <Button text={"DOWNLOAD PRIVATE KEY"} onClick={downloadPrivateKey}/>
+    <button onClick={() => generateAndDownloadQR(publicKey, 'publicKeyQR')}>Download Public Key QR Code</button>
+    <button onClick={() => generateAndDownloadQR(privateKey, 'privateKeyQR')}>Download Private Key QR Code</button>
+
         </div>
+
+
+
       </div>
     </div>
   );
