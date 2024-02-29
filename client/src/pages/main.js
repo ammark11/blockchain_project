@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import UploadButton from "../components/Button/UploadButton";
 import Button from "../components/Button/Button";
 import axios from "axios";
+import { Html5Qrcode } from "html5-qrcode";
+import { Html5QrcodeScanner } from "html5-qrcode";
+
+
 // import { Table } from '../components/Table';
 import "../assets/main.css";
 const Main = () => {
@@ -19,10 +23,13 @@ const Main = () => {
     reader.onload = function (event) {
       // The file's text will be printed here
       console.log(event.target.result);
-      setFile(event.target.result);
+      setFile(file);
     };
     reader.readAsText(file);
   };
+
+
+
   const handlePublicKeyUpload = (event) => {
     var file = event.target.files[0];
     var reader = new FileReader();
@@ -33,7 +40,7 @@ const Main = () => {
 
     reader.readAsText(file);
   };
-  
+
   const handlePrivateKeyUpload = (event) => {
     const uploadedPublicKey = event.target.files[0];
     setPublicKey(uploadedPublicKey);
@@ -49,6 +56,7 @@ const Main = () => {
     formData.append("amount", amount);
     formData.append("recipient", publicKey);
     try {
+
       const response = await axios.post(
         "http://139.162.41.68:5000/add_transaction",
         formData
@@ -58,6 +66,7 @@ const Main = () => {
       console.error("Error sending transaction:", error);
     }
   };
+
   const generateBlock = async () => {
     try {
       const response = await axios.get("http://139.162.41.68:5000/mine_block");
@@ -67,15 +76,38 @@ const Main = () => {
     }
   };
 
+  const startScanning = () => {
+    const html5QrCode = new Html5Qrcode("qr-reader");
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-  
+    html5QrCode.start(
+      { facingMode: "environment" },
+      config,
+      (decodedText, decodedResult) => {
+        // Use decodedText as the public key
+        console.log(`Decoded text: ${decodedText}`);
+        setPublicKey(decodedText); // Set the scanned public key as the state
+        html5QrCode.stop().then(() => {
+          console.log("QR Scanning stopped.");
+        }).catch(err => {
+          console.error("Failed to stop QR scanner", err);
+        });
+      }
+    ).catch(err => {
+      // Start failed, handle it
+      console.error("Failed to start QR scanner", err);
+    });
+  };
+
   return (
-   
+
     <center>
                    <br></br><br></br><br></br>
             <br></br>
+
+
     <div className="form-container">
-      
+
       <br></br>
       <h2>Blockchain Transaction</h2>
       <br></br>
@@ -87,6 +119,9 @@ const Main = () => {
         {file.length > 0 && (
           <p className="message">File has successfully been uploaded</p>
         )}
+        <br></br>
+                    <label htmlFor="Public Key">Recever Public Key</label>
+                            <br></br>
         <UploadButton
           text={"Upload public key"}
           action={(e) => handlePublicKeyUpload(e)}
@@ -95,9 +130,15 @@ const Main = () => {
         {publicKey.length > 0 && (
           <p className="message">Public key has successfully been uploaded</p>
         )}
+                <br></br>
+
+        <button id="start-scan" onClick={startScanning}>Scan QR Code Public Key</button>
+        <div id="qr-reader"></div>
+
         <br></br>
             <label htmlFor="senderAddress">Sender Address</label>
             <br></br>
+
             <br></br>
         <input
           type="text"
@@ -118,17 +159,16 @@ const Main = () => {
           required
         /><br></br>
                   <br></br>
-        <Button text={"Send transaction"} onClick={(e) => sendTransaction(e)} />        
+        <Button text={"Send transaction"} onClick={(e) => sendTransaction(e)} />
         <Button
           text={"Generate block"}
           onClick={(e) => generateBlock(e)}
         />
       </div>
- 
+
 
 
     </center>
   );
 };
 export default Main;
-
