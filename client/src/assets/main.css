@@ -18,7 +18,7 @@ a, button {
     letter-spacing: 1.5px;
     transition: background-color 0.3s, transform 0.3s;
     border-radius: 5px;
-    box-shadow: 0 0 20px #7209b7; 
+    box-shadow: 0 0 20px #7209b7;
     padding: 0.5em 1em;
 }
 
@@ -37,7 +37,7 @@ input, select, textarea {
     margin-bottom: 10px;
     width: 100%; /* Full width on smaller screens */
     max-width: 200px;
-    
+
 }
 
 input:focus, select:focus, textarea:focus {
@@ -129,10 +129,10 @@ input:focus, select:focus, textarea:focus {
     color: #c792ea; /* Light text */
     font-weight: bold;
     background-color: #222;
-    width: 100%; 
+    width: 100%;
     border-color: hsl(308.38deg 94.43% 88.52%);
 
-    
+
 }
 
 .form-container input {
@@ -196,4 +196,7 @@ input:focus, select:focus, textarea:focus {
     font-size: 14px; /* Adjust as necessary */
     text-transform: uppercase; /* Consistency with other buttons */
     letter-spacing: 1.5px;
+}
+#app {
+  max-width: 50%
 }

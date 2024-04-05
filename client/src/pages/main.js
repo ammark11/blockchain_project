@@ -23,7 +23,7 @@ const Main = () => {
     reader.onload = function (event) {
       // The file's text will be printed here
       console.log(event.target.result);
-      setFile(file);
+      setFile(event.target.result);
     };
     reader.readAsText(file);
   };
@@ -35,7 +35,9 @@ const Main = () => {
     var reader = new FileReader();
     reader.onload = function (event) {
       // The file's text will be printed here      console.log(event.target.result);
+      console.log(event.target.result);
       setPublicKey(event.target.result);
+
     };
 
     reader.readAsText(file);
@@ -102,8 +104,10 @@ const Main = () => {
     useEffect(() => {
       const config = { fps: 10, qrbox: 250 };
       const html5QrcodeScanner = new Html5QrcodeScanner("qr-code-full-region", config,  false);
+
       const onScanSuccess = (decodedText, decodedResult) => {
         setPublicKey(decodedText);;
+        console.log(`Scan result ${decodedText}`, decodedResult);
       };
 
       html5QrcodeScanner.render(onScanSuccess);
@@ -119,6 +123,11 @@ const Main = () => {
 
     <center>
 
+    <div id="app">
+
+          <div id="qr-code-full-region"></div>
+
+</div>
 
 
 
@@ -155,10 +164,7 @@ const Main = () => {
                 <br></br>
 
         <button id="start-scan" onClick={startScanning}>Scan QR Code Public Key</button>
-        <div id="app">
-              <div id="qr-code-full-region"></div>
 
-    </div>
 
         <div id="qr-reader"></div>
 

@@ -7,13 +7,13 @@ WORKDIR /app
 
 COPY . /app
 
-COPY requirements.txt /app/requirements.txt
+WORKDIR /app/server
+COPY requirements.txt /app/server/requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 
-WORKDIR /app/server
 
-CMD ["python", "./node.py"] &
+CMD ["python", "./server/node.py"]
 
 
 WORKDIR /app
