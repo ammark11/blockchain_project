@@ -10,7 +10,7 @@
     cursor: pointer;
 }
 .file {
-    width: 100%;
+    width: 60%;
 }
 .file > input[type='file'] {
     display: none
