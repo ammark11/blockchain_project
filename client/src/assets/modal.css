@@ -12,7 +12,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: #1a1a2e ;
   padding: 20px;
   border-radius: 8px;
   width: 90%;
@@ -33,7 +33,7 @@
 .upload-button, .scan-button {
   width: 100%;
   padding: 10px;
-  background-color: #4CAF50;
+  background-color: #7209b7;
   color: white;
   border: none;
   border-radius: 4px;
@@ -55,13 +55,13 @@
 }
 
 .close-button:hover {
-  background-color: #da190b;
+  background-color: #490581;
 }
 
 .divider {
   text-align: center;
   margin: 15px 0;
-  color: #666;
+  color: #FFF;
 }
 
 .error-message {

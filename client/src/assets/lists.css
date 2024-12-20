@@ -88,9 +88,9 @@
     margin: 2rem auto;
     max-width: 800px;
     padding: 0 1rem;
-  }
-  
-  .search-wrapper {
+}
+
+.search-wrapper {
     display: flex;
     gap: 1rem;
     background: rgba(15, 52, 96, 0.95);

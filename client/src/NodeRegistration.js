@@ -15,7 +15,7 @@ const NodeRegistration = () => {
     };
 
     return (
-        <div>
+        <div className='lists__search'>
             <input 
                 type="text" 
                 placeholder="Enter node address" 

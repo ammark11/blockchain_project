@@ -11,7 +11,6 @@
   
     /* Backgrounds */
     --dashboard-background-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    --dashboard-section-background: rgba(15, 52, 96, 0.95);
     --dashboard-section-hover-background: rgba(179, 65, 249, 0.8);
     --dashboard-card-background: rgba(25, 25, 50, 0.9);
     --dashboard-card-hover-background: rgba(179, 65, 249, 0.8);
