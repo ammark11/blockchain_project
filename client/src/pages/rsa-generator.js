@@ -66,9 +66,9 @@ const Generator = () => {
         width: 800, // Larger size for better scanning
         scale: 4,
         type: 'image/png',
-        quality: 0.92,
+        quality: 1,
         rendererOpts: {
-          quality: 0.92
+          quality: 1
         }
       });
       

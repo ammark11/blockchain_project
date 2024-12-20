@@ -1,25 +1,468 @@
-.dashboard {
+/* Dashboard.css */
+
+/* =========================
+   1. CSS Variables
+========================= */
+:root {
+    /* Primary Colors */
+    --dashboard-primary-color: #b341f9;
+    --dashboard-secondary-color: #9c27b0;
+    --dashboard-accent-color: #7b1fa2;
+  
+    /* Backgrounds */
+    --dashboard-background-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --dashboard-section-background: rgba(15, 52, 96, 0.95);
+    --dashboard-section-hover-background: rgba(179, 65, 249, 0.8);
+    --dashboard-card-background: rgba(25, 25, 50, 0.9);
+    --dashboard-card-hover-background: rgba(179, 65, 249, 0.8);
+  
+    /* Text Colors */
+    --dashboard-text-color: #fff;
+    --dashboard-subtext-color: #d1d1d1;
+    --dashboard-change-positive-color: #4caf50;
+    --dashboard-change-negative-color: #ff5252;
+  
+    /* Shadows */
+    --dashboard-box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    --dashboard-hover-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+    
+    /* Font */
+    --dashboard-font-family: 'Orbitron', sans-serif;
+  }
+  
+  /* =========================
+     2. General Styles
+  ========================= */
+  body {
+    margin: 0;
+    font-family: var(--dashboard-font-family);
+    background: var(--dashboard-background-gradient);
+    color: var(--dashboard-text-color);
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* =========================
+     3. Dashboard Container
+  ========================= */
+  .dashboard-container { 
+    padding: 2rem;
+    background: transparent;
+    min-height: calc(100vh - 72px); /* Adjust based on Header height */
+    display: grid;
+    gap: 2rem;
+    max-width: 1800px;
+    margin: 0 auto;
+    animation: dashboard-fadeIn 1s ease-in-out;
+  }
+  
+  /* =========================
+     4. Common Section Styles
+  ========================= */
+  .dashboard-section {
+    background: var(--dashboard-section-background);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.8rem;
+    box-shadow: var(--dashboard-box-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .dashboard-section:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--dashboard-hover-shadow);
+  }
+  
+  .dashboard-section-title {
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  
+  .dashboard-section-title h2,
+  .dashboard-section-title h3 {
+    color: var(--dashboard-text-color);
+    font-size: 1.6rem;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(179, 65, 249, 0.3);
+    display: inline-block;
+  }
+  
+  .dashboard-section-title::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 2px;
+    background: var(--dashboard-primary-color);
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease;
+  }
+  
+  .dashboard-section-title:hover::after {
+    width: 100%;
+  }
+  
+  /* =========================
+     5. Stats Section
+  ========================= */
+  .dashboard-stats-section {
     display: flex;
-    justify-content: space-around;
-    padding: 20px;
-    background-color: #1e1e1e; /* Dark background for a futuristic look */
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .dashboard-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    animation: dashboard-slideIn 1s ease-in-out;
+  }
+  
+  /* Stat Card Styles */
+  .dashboard-stats-grid .stat-card {
+    background: var(--dashboard-card-background);
+    border-radius: 12px;
+    padding: 1.8rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  
+  .dashboard-stats-grid .stat-card:hover {
+    background: var(--dashboard-card-hover-background);
+    transform: translateY(-5px);
+  }
+  
+  .dashboard-stats-grid .stat-card .icon {
+    font-size: 2.5rem; /* Increased icon size for better prominence */
+    margin-right: 1.2rem;
+    color: var(--dashboard-text-color);
+    transition: color 0.3s ease;
+  }
+  
+  .dashboard-stats-grid .stat-card:hover .icon {
+    color: #ffe600; /* Change icon color on hover for emphasis */
+  }
+  
+  .dashboard-stats-grid .stat-card .info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-stats-grid .stat-card .info .title {
+    font-size: 1rem; /* Increased font size for titles */
+    color: var(--dashboard-subtext-color);
+    margin-bottom: 0.4rem;
+    font-weight: 500; /* Enhanced font weight for better readability */
+    letter-spacing: 0.5px;
+  }
+  
+  .dashboard-stats-grid .stat-card .info .value {
+    font-size: 1.8rem; /* Increased font size for values */
+    font-weight: 700; /* Bold font weight for emphasis */
+    color: var(--dashboard-text-color);
+    margin-bottom: 0.3rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Subtle text shadow for depth */
+  }
+  
+  .dashboard-stats-grid .stat-card .info .change {
+    font-size: 0.9rem; /* Adjusted font size for change indicators */
+    color: var(--dashboard-change-positive-color);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dashboard-stats-grid .stat-card .info .change.negative {
+    color: var(--dashboard-change-negative-color);
+  }
+  
+  .dashboard-stats-grid .stat-card .info .change .arrow {
+    margin-right: 0.3rem;
+    font-size: 1rem;
+  }
+  
+  .dashboard-stats-grid .stat-card .info .change.positive .arrow {
+    color: var(--dashboard-change-positive-color);
+  }
+  
+  .dashboard-stats-grid .stat-card .info .change.negative .arrow {
+    color: var(--dashboard-change-negative-color);
+  }
+  
+  /* =========================
+     6. Map Section
+  ========================= */
+  .dashboard-map-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .dashboard-map-container {
+    height: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+  }
+  
+  .dashboard-map-container:hover {
+    transform: scale(1.02);
+  }
+  
+  .dashboard-map-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #ff6b6b;
+    font-size: 1.2rem;
+  }
+  
+  /* =========================
+     7. Charts Section
+  ========================= */
+  .dashboard-charts-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  .dashboard-charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  .dashboard-chart-card {
+    background: var(--dashboard-section-background);
+    border-radius: 15px;
+    padding: 1.8rem;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background 0.3s ease;
+  }
+  
+  .dashboard-chart-card:hover {
+    background: var(--dashboard-section-hover-background);
+  }
+  
+  .dashboard-chart-title {
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-chart-title h3 {
+    font-size: 1.4rem;
+    color: var(--dashboard-text-color);
+  }
+  
+  .dashboard-chart-container {
+    height: 100%;
+    position: relative;
+  }
+  
+  /* =========================
+     8. Performance Metrics Section
+  ========================= */
+  .dashboard-metrics-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .dashboard-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    animation: dashboard-slideIn 1s ease-in-out;
+  }
+  
+  /* Metric Card Styles */
+  .dashboard-metrics-grid .metric-card {
+    background: var(--dashboard-card-background);
+    border-radius: 12px;
+    padding: 1.8rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  
+  .dashboard-metrics-grid .metric-card:hover {
+    background: var(--dashboard-card-hover-background);
+    transform: translateY(-5px);
+  }
+  
+  .dashboard-metrics-grid .metric-card .icon {
+    font-size: 2.5rem; /* Consistent icon size */
+    margin-right: 1.2rem;
+    color: var(--dashboard-text-color);
+    transition: color 0.3s ease;
+  }
+  
+  .dashboard-metrics-grid .metric-card:hover .icon {
+    color: #ffe600; /* Highlight icon on hover */
+  }
+  
+  .dashboard-metrics-grid .metric-card .info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-metrics-grid .metric-card .info .title {
+    font-size: 1rem; /* Increased font size for titles */
+    color: var(--dashboard-subtext-color);
+    margin-bottom: 0.4rem;
+    font-weight: 500; /* Enhanced font weight */
+    letter-spacing: 0.5px;
+  }
+  
+  .dashboard-metrics-grid .metric-card .info .value {
+    font-size: 1.8rem; /* Increased font size for values */
+    font-weight: 700; /* Bold for emphasis */
+    color: var(--dashboard-text-color);
+    margin-bottom: 0.3rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Subtle shadow */
+  }
+  
+  /* =========================
+     9. Responsive Design
+  ========================= */
+  @media screen and (max-width: 1400px) {
+    .dashboard-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .dashboard-charts-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .dashboard-metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .dashboard-container {
+      padding: 1rem;
+    }
+  
+    .dashboard-stats-grid,
+    .dashboard-charts-grid,
+    .dashboard-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .dashboard-chart-card {
+      height: 300px;
+    }
+  
+    .dashboard-section-title {
+      text-align: center;
+    }
+  
+    .dashboard-map-container {
+      height: 300px;
+    }
+  
+    /* Adjust font sizes for smaller screens */
+    .dashboard-section-title h2,
+    .dashboard-section-title h3 {
+      font-size: 1.4rem;
+    }
+  
+    .dashboard-stats-grid .stat-card .icon,
+    .dashboard-metrics-grid .metric-card .icon {
+      font-size: 2rem;
+      margin-right: 1rem;
+    }
+  
+    .dashboard-stats-grid .stat-card .info .title,
+    .dashboard-metrics-grid .metric-card .info .title {
+      font-size: 0.9rem;
+    }
+  
+    .dashboard-stats-grid .stat-card .info .value,
+    .dashboard-metrics-grid .metric-card .info .value {
+      font-size: 1.5rem;
+    }
+  
+    .dashboard-stats-grid .stat-card .info .change {
+      font-size: 0.8rem;
+    }
+  }
+  
+  /* =========================
+     10. Animations
+  ========================= */
+  @keyframes dashboard-fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes dashboard-slideIn {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  /* =========================
+     11. Additional Enhancements
+  ========================= */
+  
+  /* Tooltip Styles (Optional) */
+  .dashboard-section .tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .dashboard-section .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: var(--dashboard-secondary-color);
     color: #fff;
-}
-
-.dashboard-item {
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #333;
     text-align: center;
-    transition: transform 0.4s ease;
-}
-
-.dashboard-item:hover {
-    transform: scale(1.1); /* Simple animation on hover */
-}
-
-.count {
-    font-size: 2em;
-    font-weight: bold;
-    margin-top: 10px;
-}
+    border-radius: 6px;
+    padding: 0.5rem;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the element */
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .dashboard-section .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  /* =========================
+     12. Media Queries for Very Small Screens
+  ========================= */
+  @media screen and (max-width: 480px) {
+    .dashboard-stats-grid .stat-card,
+    .dashboard-metrics-grid .metric-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .dashboard-stats-grid .stat-card .icon,
+    .dashboard-metrics-grid .metric-card .icon {
+      margin-right: 0;
+      margin-bottom: 0.5rem;
+    }
+  
+    .dashboard-stats-grid .stat-card .info .value,
+    .dashboard-metrics-grid .metric-card .info .value {
+      font-size: 1.4rem;
+    }
+  }
+  

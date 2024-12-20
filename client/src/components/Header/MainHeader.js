@@ -29,9 +29,12 @@ const MainHeader =() => {
                 </div>
                 <div className='header__links'>
                     <ul>
-                        <Link to="/lists">CRYPTOS</Link>
-                        <Link to="/register-node">Register Node</Link>
+                        <Link to="/">MAIN PAGE</Link>
+                        <Link to="/lists">Blockchain Explorer</Link>
                         <Link to="/nodes-dashboard">Nodes Dashboard</Link>
+                        <Link to="/generator">RSA KEY GENERATOR</Link>
+                        <Link to="/register-node">Register Node</Link>
+                        <Link to="/dashboard">Dashboard</Link>
                     </ul>
                 </div>
                 <div className='header__auth'>

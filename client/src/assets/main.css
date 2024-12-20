@@ -1,8 +1,11 @@
 ﻿/* General Styles */
 body {
-    background-color: #1a1a2e; /* Dark background */
-    color: #e0e0e0; /* Light text */
-    font-family: 'Orbitron', sans-serif; /* Sci-fi font */
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #e0e0e0;
+    font-family: 'Orbitron', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -29,20 +32,18 @@ a:hover, button:hover {
 }
 
 input, select, textarea {
-    background-color: #0f3460;
-    border: 1px solid #7209b7;
+    background: rgba(15, 52, 96, 0.8);
+    border: 2px solid #7209b7;
     color: #e0e0e0;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    width: 100%; /* Full width on smaller screens */
-    max-width: 200px;
-
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 input:focus, select:focus, textarea:focus {
-    outline: none;
-    box-shadow: 0 0 10px #7209b7;
+    border-color: #560bad;
+    box-shadow: 0 0 15px rgba(114, 9, 183, 0.5);
+    transform: translateY(-2px);
 }
 
 /* Container for each page */
@@ -199,4 +200,95 @@ input:focus, select:focus, textarea:focus {
 }
 #app {
   max-width: 50%
+}
+
+/* Glowing effects */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px #7209b7; }
+    50% { box-shadow: 0 0 20px #7209b7, 0 0 30px #560bad; }
+    100% { box-shadow: 0 0 5px #7209b7; }
+}
+
+/* Modern Card Design */
+.card {
+    background: rgba(15, 52, 96, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.47);
+}
+
+/* Neon Buttons */
+.neon-button {
+    background: linear-gradient(45deg, #7209b7, #560bad);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    animation: glow 2s infinite;
+}
+
+.neon-button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(45deg, #560bad, #7209b7);
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: rgba(15, 52, 96, 0.9);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 15px;
+    transition: all 0.3s ease;
+    animation: glow 3s infinite;
+}
+
+.dashboard-card:hover {
+    transform: scale(1.05);
+}
+
+/* Tables */
+.table-container {
+    background: rgba(15, 52, 96, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+/* Navigation */
+.nav-link {
+    position: relative;
+    color: #e0e0e0;
+    text-decoration: none;
+    padding: 10px 20px;
+    overflow: hidden;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #7209b7;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1);
 }

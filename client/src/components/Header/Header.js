@@ -16,10 +16,9 @@ const Header = () => {
         <ul>
           <li><Link to="/">MAIN PAGE</Link></li>
           <li><Link to="/generator">RSA KEY GENERATOR</Link></li>
-          <li><Link to="/lists">INSERT</Link></li>
+          <li><Link to="/lists">Blockchain Explorer</Link></li>
           <li><Link to="/register-node">Register Node</Link></li>
           <li><Link to="/nodes-dashboard">Nodes Dashboard</Link></li>
-          <li><Link to="/update-transaction">Update Transaction</Link></li>
           <li><Link to="/dashboard">Dashboard</Link></li>
         </ul>
       </div>

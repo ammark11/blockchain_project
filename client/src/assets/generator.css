@@ -1,144 +1,75 @@
-.generator,.blockGenerator {
-    height: 120vh;
-    color: white;
+.generator {
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
-.generator_buttons {
-    display: flex;
-    justify-content: space-around;
-}
-.blockGenerator__container {
-    width:70%;
-    height: 50%;
+
+.generator__container {
+    max-width: 1200px;
     margin: 0 auto;
-    background-color: rgba(255,255,255,0.1);
-    margin-top: 100px;
-    padding: 30px;
-}
-.blockGenerator__container div {
-    margin: 0 auto;
-}
-.blockGenerator__container_btns {
-    display : flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    margin: 10px;
-}
-.blockGenerator__container_btns div{
-margin : 10px 0;
-}
-.generator-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+    padding: 2rem;
+    background: rgba(15, 52, 96, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-.generator-container h1 {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.generate-button {
-  display: block;
-  width: 200px;
-  margin: 20px auto;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.generate-button:hover {
-  background-color: #45a049;
-}
-
-.key-section {
-  margin: 20px 0;
-}
-
-.key-section h2 {
-  margin-bottom: 10px;
-}
-
-.key-display {
-  width: 100%;
-  height: 150px;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-family: monospace;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.download-button {
-  padding: 8px 16px;
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.download-button:hover {
-  background-color: #1976D2;
-}
-
-.qr-scanner-container {
-  margin-top: 20px;
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  background: #f5f5f5;
-  border-radius: 8px;
-}
-
-.qr-scanner-container video {
-  width: 100%;
-  border-radius: 4px;
+.generator__title {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(114, 9, 183, 0.5);
 }
 
 .generator_buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 20px;
-  padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
 }
 
 .generator_buttons button {
-  min-width: 220px;
-  padding: 12px 20px;
-  font-size: 14px;
-  white-space: nowrap;
+    background: linear-gradient(45deg, #7209b7, #560bad);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    animation: glow 2s infinite;
 }
 
-.qr-code-container {
-  max-width: 1024px;
-  margin: 20px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.generator_buttons button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(114, 9, 183, 0.3);
 }
 
-.qr-code-container img {
-  width: 100%;
-  height: auto;
-  max-width: 1024px;
+.key-display {
+    background: rgba(15, 52, 96, 0.8);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', monospace;
+    color: #e0e0e0;
+    border: 1px solid rgba(114, 9, 183, 0.3);
 }
 
-/* Add loading state styles */
-.button-loading {
-  opacity: 0.7;
-  cursor: not-allowed;
+.qr-scanner-container {
+    background: rgba(15, 52, 96, 0.95);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-.error-message {
-  color: #f44336;
-  margin: 10px 0;
-  text-align: center;
+@keyframes glow {
+    0% { box-shadow: 0 0 5px #7209b7; }
+    50% { box-shadow: 0 0 20px #7209b7, 0 0 30px #560bad; }
+    100% { box-shadow: 0 0 5px #7209b7; }
 }

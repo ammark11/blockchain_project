@@ -1,25 +1,278 @@
-.dashboard {
-    display: flex;
-    justify-content: space-around;
-    padding: 20px;
-    background-color: #1e1e1e; /* Dark background for a futuristic look */
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     color: #fff;
-}
-
-.dashboard-item {
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #333;
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.dashboard-item:hover {
-    transform: scale(1.1); /* Simple animation on hover */
-}
-
-.count {
-    font-size: 2em;
+  }
+  
+  /* Dashboard Container */
+  .dashboard-container { 
+    padding: 2rem;
+    background: transparent;
+    min-height: calc(100vh - 72px);
+    display: grid;
+    gap: 2rem;
+    max-width: 1800px;
+    margin: 0 auto;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  /* Common Section Styles */
+  .dashboard-section {
+    background: rgba(15, 52, 96, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.8rem;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .dashboard-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+  }
+  
+  .section-title {
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  
+  .section-title h2 {
+    color: #fff;
+    font-size: 1.6rem;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(179, 65, 249, 0.3);
+    display: inline-block;
+  }
+  
+  .section-title::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 2px;
+    background: #b341f9;
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease;
+  }
+  
+  .section-title:hover::after {
+    width: 100%;
+  }
+  
+  /* Stats Section */
+  .stats-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    animation: slideIn 1s ease-in-out;
+  }
+  
+  .stat-card {
+    background: rgba(25, 25, 50, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    background: rgba(179, 65, 249, 0.8);
+  }
+  
+  .stat-card .icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    color: #fff;
+  }
+  
+  .stat-card .info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-card .info .title {
+    font-size: 0.9rem;
+    color: #d1d1d1;
+    margin-bottom: 0.3rem;
+  }
+  
+  .stat-card .info .value {
+    font-size: 1.4rem;
     font-weight: bold;
-    margin-top: 10px;
-}
+  }
+  
+  .stat-card .info .change {
+    font-size: 0.8rem;
+    color: #4caf50;
+  }
+  
+  /* Map Section */
+  .map-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .map-container {
+    height: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+  }
+  
+  .map-container:hover {
+    transform: scale(1.02);
+  }
+  
+  .map-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #ff6b6b;
+    font-size: 1.2rem;
+  }
+  
+  /* Charts Section */
+  .charts-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  .chart-card {
+    background: rgba(15, 52, 96, 0.95);
+    border-radius: 15px;
+    padding: 1.8rem;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background 0.3s ease;
+  }
+  
+  .chart-card:hover {
+    background: rgba(179, 65, 249, 0.8);
+  }
+  
+  .chart-container {
+    height: 100%;
+    position: relative;
+  }
+  
+  .chart-card h2 {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    color: #fff;
+  }
+  
+  /* Performance Metrics Section */
+  .metrics-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    animation: slideIn 1s ease-in-out;
+  }
+  
+  .metric-card {
+    background: rgba(25, 25, 50, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s ease;
+  }
+  
+  .metric-card:hover {
+    background: rgba(179, 65, 249, 0.8);
+  }
+  
+  .metric-card .icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    color: #fff;
+  }
+  
+  .metric-card .info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .metric-card .info .title {
+    font-size: 0.9rem;
+    color: #d1d1d1;
+    margin-bottom: 0.3rem;
+  }
+  
+  .metric-card .info .value {
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 1400px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .charts-section {
+      grid-template-columns: 1fr;
+    }
+  
+    .metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .dashboard-container {
+      padding: 1rem;
+    }
+  
+    .stats-grid,
+    .charts-section,
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .chart-card {
+      height: 300px;
+    }
+  
+    .section-title {
+      text-align: center;
+    }
+  
+    .map-container {
+      height: 300px;
+    }
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
