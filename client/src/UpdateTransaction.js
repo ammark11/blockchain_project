@@ -16,7 +16,7 @@ const UpdateTransaction = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://139.162.41.68:5000/update_transaction', transactionData);
+            const response = await axios.post('http://localhost:5000/update_transaction', transactionData);
             console.log(response.data);
             // Handle response
         } catch (error) {

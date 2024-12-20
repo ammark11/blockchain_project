@@ -4,13 +4,13 @@ import MainHeader from "./components/Header/MainHeader";
 import Header from "./components/Header/Header";
 import Main from "./pages/main";
 import Lists from '../src/pages/lists';
-import Generator from "./pages/rsa-generator";
 import BlockGenerator from "./pages/block-generate";
 import TransactionDetails from "./pages/transactionDetails";
 import NodeRegistration from './NodeRegistration';
 import NodesDashboard from './NodesDashboard';
 import Dashboard from './pages/Dashboard'; 
 import UpdateTransaction from './UpdateTransaction';
+import Generator from "./pages/rsa-generator";
 
 function App() {
   return (
@@ -21,11 +21,11 @@ function App() {
           <Route path="/nodes-dashboard" element={<NodesDashboard />} />
           <Route path="/" element={[<MainHeader />, <Main />]} />
           <Route path="/lists" element={[<Header/>, <Lists />]} />
-          <Route path="/generator" element={[<Header />, <Generator />]} />
           <Route path="/block-generate" element={[<Header />, <BlockGenerator />]} />
           <Route path="/transaction-detail/:index" element={[<MainHeader />, <TransactionDetails />]} />
           <Route path="/update-transaction" element={<UpdateTransaction />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/generator" element={[<Header />, <Generator />]} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -3,9 +3,12 @@ import { useParams } from "react-router-dom";
 import UploadButton from "../components/Button/UploadButton";
 import "../assets/table.css";
 import axios from "axios";
+import { isAuthenticated } from '../utils/auth';
 
 const TransactionDetails = () => {
   const [transaction, setTransaction] = useState({});
+  const [decryptedData, setDecryptedData] = useState({});
+  const [currentPrivateKey, setCurrentPrivateKey] = useState(null);
   const { index } = useParams();
   const [columns] = useState([
     "INDEX",
@@ -16,66 +19,89 @@ const TransactionDetails = () => {
   ]);
 
   const fetchData = async () => {
-    const response = await fetch("http://139.162.41.68:5000/get_chain");
+    const response = await fetch("http://localhost:5000/get_chain");
     const result = await response.json();
     if (result)
       setTransaction(
         result.chain.filter((item) => item.index === index * 1)[0]
       );
   };
+
   useEffect(() => {
     fetchData();
   }, []);
- 
 
-  const handleFileUpload =  (
-    event,
-    index,
-    transaction_index,
-    encrypted_data,
-  ) => {
-    var file = event.target.files[0];
-    var reader = new FileReader();
-    reader.onload = async function  (event) {
-      console.log(event.target.result);
-      const formData = new FormData();
-      formData.append("private_file", event.target.result);
-      formData.append("encrypted_data", encrypted_data);
-      formData.append("index", index);
-      formData.append("transaction_index", transaction_index);
-      console.log(encrypted_data)
-      const response = await axios
-        .post("http://139.162.41.68:5000/get_decrypted_data", formData)
-        .then(async (res) => {
-          await fetchData();
-          downloadFile(res.data);
-        })
-    };
-
-    reader.readAsText(file);
-
+  const handleLogin = async (privateKey) => {
+    try {
+      const response = await axios.post('http://localhost:5000/login', {
+        private_key: privateKey
+      });
+      
+      localStorage.setItem('jwt_token', response.data.token);
+      setCurrentPrivateKey(privateKey);
+      return true;
+    } catch (error) {
+      console.error('Login failed:', error);
+      return false;
+    }
   };
 
-  const downloadFile = (text) => {
-    if (typeof text === 'string' && text.length > 0) {
-      const binaryData = new Uint8Array(text.length);
-      for (let i = 0; i < text.length; i++) {
-        binaryData[i] = text.charCodeAt(i);
-      }
-  
-      const blob = new Blob([binaryData], { type: 'application/octet-stream' });
-  
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-  
-      a.href = url;
-      a.download = 'decrypted_data.txt';
-      a.click();
-    console.log(text);
-    console.log('Text Length:', text.length);  
-      window.URL.revokeObjectURL(url);
-    } else {
-      console.error('Invalid or empty text data.');
+  const handleFileUpload = async (event, blockIndex, transaction_index, encrypted_data) => {
+    try {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      
+      reader.onload = async function (event) {
+        try {
+          let privateKey = event.target.result;
+          
+          if (!currentPrivateKey) {
+            const loginSuccess = await handleLogin(privateKey);
+            if (!loginSuccess) {
+              alert('Invalid private key');
+              return;
+            }
+          } else if (privateKey !== currentPrivateKey) {
+            alert('Please use the same private key that you logged in with');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("private_file", privateKey);
+          formData.append("encrypted_data", encrypted_data);
+          formData.append("index", blockIndex - 1);
+          formData.append("transaction_index", transaction_index);
+
+          const token = localStorage.getItem('jwt_token');
+          const response = await axios.post(
+            "http://localhost:5000/get_decrypted_data", 
+            formData,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
+
+          setDecryptedData(prev => ({
+            ...prev,
+            [transaction_index]: response.data
+          }));
+
+        } catch (error) {
+          console.error('Decryption error:', error);
+          if (error.response?.status === 401 || error.response?.status === 403) {
+            alert('Unauthorized to decrypt this data');
+          } else {
+            alert('Decryption failed');
+          }
+        }
+      };
+      
+      reader.readAsText(file);
+    } catch (error) {
+      console.error('File reading error:', error);
+      alert('Error reading private key file');
     }
   };
 
@@ -129,7 +155,11 @@ const TransactionDetails = () => {
                 <p>{item.encrypted_file}</p>
               </div>
               <div>
-                <p>{item.file_data}</p>
+                {decryptedData[i] ? (
+                  <p>{decryptedData[i]}</p>
+                ) : (
+                  <p>Not decrypted</p>
+                )}
               </div>
               <div>
                 <p>{item.amount}</p>
@@ -137,13 +167,15 @@ const TransactionDetails = () => {
               <div>
                 <p>{item.add_info}</p>
               </div>
-              <UploadButton
-                text={"Decrypt"}
-                action={(e) =>
-                  handleFileUpload(e, transaction.index, i, item.file_data)
-                }
-                id="input-file1"
-              ></UploadButton>
+              <div>
+                <UploadButton
+                  text={"Decrypt"}
+                  action={(e) =>
+                    handleFileUpload(e, transaction.index, i, item.file_data)
+                  }
+                  id={`decrypt-button-${i}`}
+                />
+              </div>
             </div>
           ))}
         </div>

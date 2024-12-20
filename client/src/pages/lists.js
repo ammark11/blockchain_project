@@ -9,7 +9,7 @@ const Lists = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('http://139.162.41.68:5000/get_chain');
+      const response = await fetch('http://localhost:5000/get_chain');
       const result = await response.json();
       if (result && result.chain) {
         setBlocks(result.chain);

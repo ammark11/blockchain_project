@@ -16,6 +16,10 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
+from functools import wraps
+import jwt
+from datetime import datetime, timedelta
+from vt import Client
 
 
 class Blockchain:
@@ -31,7 +35,7 @@ class Blockchain:
         block = {
             "index": len(self.chain) + 1,
             "miner": miner_address,
-            "timestamp": str(datetime.datetime.now()),
+            "timestamp": str(datetime.now()),
             "proof": proof,
             "previous_hash": previous_hash,
             "merkle_root": merkle_root,
@@ -114,7 +118,7 @@ class Blockchain:
         self.transactions.append({
             "sender": sender,
             "amount": amount,
-            "recipient": recipient,
+            "recipient": public_key,
             "public_key": public_key,
             "add_info": add_info,
             "file_data": file_data
@@ -123,13 +127,19 @@ class Blockchain:
         return previous_block["index"] + 1
 
     def update_encrypted_transaction(self, decrypted_file, index, transaction_index):
-        i = 0;
-        for (i, ch) in enumerate(self.chain):
-            # print(i, ch['index'])
-            if(ch['index'] == int(index)):
-                # print(self.chain[i]['transactions'][int(transaction_index)])
-                self.chain[i]['transactions'][int(transaction_index)]['encrypted_file'] = decrypted_file;
-
+        try:
+            block_index = int(index)
+            trans_index = int(transaction_index)
+            
+            if block_index < len(self.chain):
+                block = self.chain[block_index]
+                if trans_index < len(block['transactions']):
+                    self.chain[block_index]['transactions'][trans_index]['encrypted_file'] = decrypted_file
+                    return True
+            return False
+        except Exception as e:
+            print(f"Error updating transaction: {str(e)}")
+            return False
 
     def add_node(self, address):
         paresed_url = urlparse(address)
@@ -219,7 +229,6 @@ def encrypt_text_data(text_data, recipient_public_key):
             encrypted_data_chunks.append(encrypted_chunk)
 
         encrypted_data = b"".join(encrypted_data_chunks)
-        # print("Encrypted Data:", encrypted_data)
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"Time spent on file encryption: {elapsed_time} seconds")
@@ -267,7 +276,27 @@ def decrypt_text_data(encrypted_data, private_key):
 
 blockchain = Blockchain()
 
+JWT_SECRET = 'your-secret-key'  # In production, use environment variable
 
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(" ")[1]
+        
+        if not token:
+            return jsonify({'message': 'Token is missing'}), 401
+        
+        try:
+            data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            current_user = data['public_key']
+        except:
+            return jsonify({'message': 'Token is invalid'}), 401
+        
+        return f(current_user, *args, **kwargs)
+    
+    return decorated
 
 @app.route("/mine_block", methods=['GET'])
 def mine_block():
@@ -317,62 +346,137 @@ def is_valid():
 
 
 @app.route("/get_decrypted_data", methods=['POST'])
-def get_decrypted_data():
-    json = request.form.to_dict(flat=True)
-    transaction_keys = ['private_file', "encrypted_data", "index", "transaction_index"]
-    # print("Encrypted Data:", json["encrypted_data"])
-
-    if not all(key in json for key in transaction_keys):
-        return "Some elements of the transaction are missing", 400
-
+@token_required
+def get_decrypted_data(current_user):
     try:
+        json = request.form.to_dict(flat=True)
+        transaction_keys = ['private_file', "encrypted_data", "index", "transaction_index"]
+
+        if not all(key in json for key in transaction_keys):
+            print("Missing keys:", set(transaction_keys) - set(json.keys()))
+            return jsonify({"error": "Missing required fields"}), 400
+
+        block_index = int(json['index'])
+        transaction_index = int(json['transaction_index'])
+        
+        # Get the transaction
+        transaction = blockchain.chain[block_index]['transactions'][transaction_index]
+        
+        # Normalize keys by removing all whitespace and newlines
+        normalized_current_user = ''.join(current_user.split())
+        normalized_recipient = ''.join(transaction['recipient'].split())
+
+        # Compare normalized keys
+        if normalized_current_user != normalized_recipient:
+            return jsonify({
+                "error": "Unauthorized to decrypt this data",
+                "transaction_recipient": transaction['recipient'],
+                "current_user": current_user
+            }), 403
+
         decrypted_text_data = decrypt_text_data(json["encrypted_data"], json["private_file"])
-
-        # print("Decrypted Data:", decrypted_text_data)
-        with open("decrypted_data.txt", "w", encoding='utf-8') as file:
-            file.write(decrypted_text_data)
-
-        index = blockchain.update_encrypted_transaction(
-            decrypted_text_data,
-            json['index'],
-            json['transaction_index']
-        )
-
-        response = {
-            "message": f"This transaction will be added to Block {index}"
-        }
-        return send_file("decrypted_data.txt", as_attachment=True, download_name="decrypted_data.txt")
+        
+        # Return decrypted data directly
+        return jsonify(decrypted_text_data)
 
     except Exception as e:
         print("Decryption Error:", str(e))
-        return "Decryption failed", 400
+        return jsonify({"error": str(e)}), 400
 
+
+VIRUSTOTAL_API_KEY = "c5561a1597122035bc3de121ef8c28628309a261f0390a24b95057e6d29ffb29"
+
+def scan_file_content(file_content):
+    try:
+        with Client(VIRUSTOTAL_API_KEY) as client:
+            print("Creating temporary file for scanning...")
+            # Create a temporary file with a unique name
+            import tempfile
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                temp_file.write(file_content.encode())
+                temp_path = temp_file.name
+
+            print("Submitting file for scanning...")
+            # Scan the file
+            with open(temp_path, 'rb') as f:
+                analysis = client.scan_file(f)
+
+            print("Waiting for scan results...")
+            # Wait for scan to complete
+            time.sleep(15)  # Increased wait time for better results
+
+            try:
+                # Get the results
+                result = client.get_object("/analyses/{}", analysis.id)
+                
+                # More detailed results
+                if result.stats.get('malicious', 0) > 0:
+                    details = f"Detected by {result.stats['malicious']} out of {result.stats.get('total', 0)} scanners"
+                    print(f"Malware detected: {details}")
+                    return False, f"Malicious file detected: {details}"
+                
+                print("File scan completed: No threats detected")
+                return True, "File is clean"
+            
+            except Exception as scan_error:
+                print(f"Error getting scan results: {str(scan_error)}")
+                return False, "Unable to verify file security"
+
+    except Exception as e:
+        print(f"Virus scan error: {str(e)}")
+        return False, f"Security scan failed: {str(e)}"
+    
+    finally:
+        # Clean up temporary file
+        try:
+            import os
+            os.remove(temp_path)
+            print("Temporary file cleaned up")
+        except Exception as cleanup_error:
+            print(f"Error cleaning up temporary file: {str(cleanup_error)}")
 
 @app.route("/add_transaction", methods=['POST'])
 def add_transactions():
-    json = request.form.to_dict(flat=True)
-    transaction_keys = ["sender", "recipient", "amount", "public_key", "add_info", 'file']
+    try:
+        json = request.form.to_dict(flat=True)
+        transaction_keys = ["sender", "recipient", "amount", "public_key", "add_info", 'file']
 
-    if not all(key in json for key in transaction_keys):
-        return "Some elements of the transaction are missing", 400
+        if not all(key in json for key in transaction_keys):
+            return jsonify({"error": "Some elements of the transaction are missing"}), 400
 
-    encrypted_text_data = encrypt_text_data(json["file"], json["public_key"])
+        # First, scan the file content for viruses
+        print("Scanning file for malware...")
+        is_clean, message = scan_file_content(json["file"])
+        if not is_clean:
+            print(f"Malware scan failed: {message}")
+            return jsonify({"error": f"File security check failed: {message}"}), 400
 
-    if not encrypted_text_data:
-        return "Encryption of text data failed", 400
+        print("File scan passed, proceeding with encryption...")
 
-    index = blockchain.add_transactions(
-        json['sender'],
-        json["recipient"],
-        json["amount"],
-        json["public_key"],  # Include public key
-        json["add_info"],  # Include additional info,
-        encrypted_text_data
-    )
-    response = {
-        "message": f"This transaction will be added to Block {index}"
-    }
-    return jsonify(response), 201
+        # If file is clean, proceed with encryption
+        encrypted_text_data = encrypt_text_data(json["file"], json["public_key"])
+        if not encrypted_text_data:
+            return jsonify({"error": "Encryption failed"}), 400
+
+        # Add transaction to blockchain
+        index = blockchain.add_transactions(
+            json['sender'],
+            json["recipient"],
+            json["amount"],
+            json["public_key"],
+            json["add_info"],
+            encrypted_text_data
+        )
+
+        response = {
+            "message": f"This transaction will be added to Block {index}",
+            "security_status": "File scanned and verified clean"
+        }
+        return jsonify(response), 201
+
+    except Exception as e:
+        print(f"Transaction error: {str(e)}")
+        return jsonify({"error": f"Failed to process transaction: {str(e)}"}), 400
 
 @app.route("/register_node", methods=['POST'])
 def register_node():
@@ -419,5 +523,67 @@ def update_transaction():
     # Add logic to handle the new transaction
     # Return a response
 
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    if not data or 'private_key' not in data:
+        return jsonify({'message': 'Missing private key'}), 400
+        
+    try:
+        # Load the private key and derive public key
+        private_key = serialization.load_pem_private_key(
+            data['private_key'].encode(),
+            password=None,
+            backend=default_backend()
+        )
+        public_key = private_key.public_key()
+        public_pem = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        ).decode('utf-8')
+        
+        # Generate token
+        token = jwt.encode({
+            'public_key': public_pem,
+            'exp': datetime.utcnow() + timedelta(hours=24)
+        }, JWT_SECRET)
+        
+        return jsonify({'token': token})
+    except Exception as e:
+        print("Login error:", str(e))
+        return jsonify({'message': 'Invalid private key'}), 401
+
+def format_pem_key(key_string):
+    """Format a key string into proper PEM format if needed"""
+    if not key_string.startswith('-----BEGIN'):
+        return key_string
+        
+    # Split the key into lines and remove empty ones
+    lines = [line.strip() for line in key_string.split('\n') if line.strip()]
+    
+    if len(lines) < 3:  # Must have at least begin, content, and end
+        raise ValueError("Invalid PEM format")
+        
+    # Reconstruct in proper format
+    formatted = lines[0] + '\n'  # BEGIN line
+    formatted += '\n'.join(lines[1:-1]) + '\n'  # Key content
+    formatted += lines[-1] + '\n'  # END line
+    
+    return formatted
+
+def validate_private_key(key_string):
+    """Validate and load a private key"""
+    try:
+        formatted_key = format_pem_key(key_string)
+        private_key = serialization.load_pem_private_key(
+            formatted_key.encode(),
+            password=None,
+            backend=default_backend()
+        )
+        return private_key
+    except Exception as e:
+        print(f"Private key validation error: {str(e)}")
+        return None
 
 app.run(host='0.0.0.0', port=5000, debug=True)

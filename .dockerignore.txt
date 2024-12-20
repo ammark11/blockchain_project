@@ -1,0 +1,32 @@
+# Ignore node_modules directories
+node_modules
+client/node_modules
+
+# Ignore local environment files
+.env
+.env.local
+
+# Ignore npm and yarn lock files, if not needed in the Docker build
+npm-debug.log
+yarn-error.log
+
+# Ignore log files
+*.log
+
+# Ignore Docker-related files
+.dockerignore
+Dockerfile*
+
+# Ignore temporary files or IDE/project settings
+*.swp
+*.swo
+*.tmp
+*.bak
+.vscode/
+.idea/
+*.DS_Store
+
+# Ignore any additional local development directories
+coverage
+dist
+build

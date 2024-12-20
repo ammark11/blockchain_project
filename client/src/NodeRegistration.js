@@ -7,7 +7,7 @@ const NodeRegistration = () => {
 
     const registerNode = async () => {
         try {
-            const response = await axios.post('http://139.162.41.68:5000/register_node', { node_address: nodeAddress });
+            const response = await axios.post('http://localhost:5000/register_node', { node_address: nodeAddress });
             setMessage(response.data.message);
         } catch (error) {
             setMessage('Error registering node.');

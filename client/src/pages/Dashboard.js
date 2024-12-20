@@ -10,12 +10,12 @@ function Dashboard() {
 
   useEffect(() => {
     // Fetch node count from NodesDashboard endpoint
-    axios.get('http://139.162.41.68:5000/get_nodes')
+    axios.get('http://localhost:5000/get_nodes')
       .then(response => setNodeCount(response.data.nodes.length))
       .catch(error => console.error('Error fetching nodes:', error));
 
     // Fetch transaction count from lists endpoint
-    axios.get("http://139.162.41.68:5000/get_chain")
+    axios.get("http://localhost:5000/get_chain")
       .then(response => {
         const transactions = response.data.chain.flatMap(block => block.transactions);
         setTransactionCount(transactions.length);
@@ -23,7 +23,7 @@ function Dashboard() {
       .catch(error => console.error('Error fetching transactions:', error));
 
     // Fetch IP address list from your source
-    axios.get('http://139.162.41.68:5000/get_nodes') // Replace with your actual endpoint
+    axios.get('http://localhost:5000/get_nodes') // Replace with your actual endpoint
       .then(response => setIpAddresses(response.data.nodes))
       .catch(error => console.error('Error fetching IP addresses:', error));
   }, []);
