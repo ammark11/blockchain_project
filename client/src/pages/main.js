@@ -151,7 +151,7 @@ const Main = () => {
           <p className="message">File has successfully been uploaded</p>
         )}
         <br></br>
-                    <label htmlFor="Public Key">Recever Public Key</label>
+                    <label htmlFor="Public Key">Receiver Public Key</label>
                             <br></br>
         <UploadButton
           text={"Upload public key"}
@@ -170,24 +170,24 @@ const Main = () => {
 
 
         <br></br>
-            <label htmlFor="senderAddress">Sender Address</label>
+            <label htmlFor="senderAddress">Comment</label>
             <br></br>
 
             <br></br>
         <input
           type="text"
-          placeholder="Sender Address"
+          placeholder="Comment"
           value={senderAddress}
           onChange={(e) => setSenderAddress(e.target.value)}
           required
         />
                 <br></br>
-            <label htmlFor="senderAddress">Amount</label>
+            <label htmlFor="senderAddress">File Identifer</label>
             <br></br>
             <br></br>
         <input
           type="number"
-          placeholder="Amount"
+          placeholder="File Identifer"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           required

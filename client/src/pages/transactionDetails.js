@@ -138,7 +138,7 @@ const TransactionDetails = () => {
           <div>Public Key</div>
           <div>Encrypted file data</div>
           <div>File Data</div>
-          <div>Amount</div>
+          <div>Identifer</div>
           <div>additional info</div>
           <div>decryption</div>
         </div>
